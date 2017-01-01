@@ -6,13 +6,14 @@ import pdb
 
 import cellular
 reload(cellular)
-import qlearn_mod_random as qlearn # to use the alternative exploration method
+import qlearn_my as qlearn
+#import qlearn_mod_random as qlearn # to use the alternative exploration method
 #import qlearn # to use standard exploration method
 reload(qlearn)
 
 directions = 8
 
-lookdist = 2
+lookdist = 2 # scope of mouse state, mose can only look +/- lookdist cells
 lookcells = []
 for i in range(-lookdist,lookdist+1):
     for j in range(-lookdist,lookdist+1):
@@ -98,7 +99,7 @@ class Mouse(cellular.Agent):
         if self.lastState is not None:
             self.ai.learn(self.lastState, self.lastAction, reward, state)
 
-        state = self.calcState()
+        state = self.calcState()  #
         action = self.ai.chooseAction(state)
         self.lastState = state
         self.lastAction = action
@@ -134,8 +135,9 @@ epsilonx = (0,100000)
 epsilony = (0.1,0)
 epsilonm = (epsilony[1] - epsilony[0]) / (epsilonx[1] - epsilonx[0])
 
-endAge = world.age + 150000
+endAge = world.age + 320000
 
+t0 = time.time()
 while world.age < endAge:
     world.update()
 
@@ -152,5 +154,7 @@ while world.age < endAge:
 
 world.display.activate(size=30)
 world.display.delay = 1
+print '#Train time: ', time.time() - t0
+
 while 1:
     world.update()
